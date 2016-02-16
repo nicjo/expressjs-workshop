@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var Sequelize = require('sequelize');
+var bodyParser = require('body-parser')
 
 var redditDb = new Sequelize('redditDb', 'nicjo', '', {
   dialect: 'mysql'
@@ -186,29 +187,7 @@ app.get('/contents', function(req, res) {
 
 // EXERCISE #5
 
-// app.get('/file/:name', function (req, res, next) {
 
-//   var options = {
-//     root: '/public/',
-//     dotfiles: 'deny',
-//     headers: {
-//         'x-timestamp': Date.now(),
-//         'x-sent': true
-//     }
-//   };
-
-//   var fileName = req.params.name;
-//   res.sendFile(fileName, options, function (err) {
-//     if (err) {
-//       console.log(err);
-//       res.status(err.status).end();
-//     }
-//     else {
-//       console.log('Sent:', fileName);
-//     }
-//   });
-
-// });
 
 app.get('/createContent', function(req, res, next) {
 var options = {
@@ -232,7 +211,17 @@ res.sendFile(fileName, options, function (err){
 
 // EXERCISE #6
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
+
+app.post('/createContent', function (req, res) {
+  // console.log(req.body);
+  var url = req.body.url;
+  var title = req.body.title;
+  Content.create({title: title, url: url, userId: 1})
+  res.redirect('/contents');
+});
 
 
 
